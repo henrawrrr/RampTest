@@ -104,6 +104,7 @@ hr.RampBreak--l {
 
 .RampInputSelect--dropdown-container-opened {
   display: block;
+  position: absolute; /*setting position to absolute allows us to place the menu at an exact location*/
 }
 
 .RampInputSelect--dropdown-item {

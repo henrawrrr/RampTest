@@ -12,7 +12,7 @@ export const InputCheckbox: InputCheckboxComponent = ({ id, checked = false, dis
           "RampInputCheckbox--label-checked": checked,
           "RampInputCheckbox--label-disabled": disabled,
         })}
-      />
+      >
       <input
         id={inputId}
         type="checkbox"
@@ -20,7 +20,9 @@ export const InputCheckbox: InputCheckboxComponent = ({ id, checked = false, dis
         checked={checked}
         disabled={disabled}
         onChange={() => onChange(!checked)}
+        //putting input within the label makes the onchange work and makes it so the employee retains its approved/unapproved transactions
       />
+      </label>
     </div>
   )
 }

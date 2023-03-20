@@ -12,7 +12,7 @@ export function App() {
   const { data: employees, ...employeeUtils } = useEmployees()
   const { data: paginatedTransactions, ...paginatedTransactionsUtils } = usePaginatedTransactions()
   const { data: transactionsByEmployee, ...transactionsByEmployeeUtils } = useTransactionsByEmployee()
-  const [isLoading, setIsLoading] = useState(false)
+  const [, setIsLoading] = useState(false) //removed unused variable
 
   const transactions = useMemo(
     () => paginatedTransactions?.data ?? transactionsByEmployee ?? null,
@@ -31,10 +31,15 @@ export function App() {
 
   const loadTransactionsByEmployee = useCallback(
     async (employeeId: string) => {
-      paginatedTransactionsUtils.invalidateData()
-      await transactionsByEmployeeUtils.fetchById(employeeId)
+      if (employeeId) { //if no employeeID we instead just load All Transactions
+        paginatedTransactionsUtils.invalidateData()
+        await transactionsByEmployeeUtils.fetchById(employeeId)
+      }
+      else {
+        loadAllTransactions()
+      }
     },
-    [paginatedTransactionsUtils, transactionsByEmployeeUtils]
+    [paginatedTransactionsUtils, transactionsByEmployeeUtils, loadAllTransactions]
   )
 
   useEffect(() => {
@@ -51,7 +56,7 @@ export function App() {
         <hr className="RampBreak--l" />
 
         <InputSelect<Employee>
-          isLoading={isLoading}
+          isLoading={employeeUtils.loading} // changed loading variable based on employee selector not transactions
           defaultValue={EMPTY_EMPLOYEE}
           items={employees === null ? [] : [EMPTY_EMPLOYEE, ...employees]}
           label="Filter by employee"
@@ -78,6 +83,7 @@ export function App() {
             <button
               className="RampButton"
               disabled={paginatedTransactionsUtils.loading}
+              hidden={paginatedTransactions?.nextPage === null || !paginatedTransactions} //if theres no next page or if there is no pagination (employee is selected) we hid the button
               onClick={async () => {
                 await loadAllTransactions()
               }}
